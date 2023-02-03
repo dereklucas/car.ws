@@ -1,14 +1,14 @@
 const { NODE_PORT } = process.env;
 
-const express = require('express');
+const express = require("express");
 
 const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, {
   cors: {
-    origin: 'https://car.js.org',
-    credentials: true
-  }
+    origin: "https://cars.vgood.science",
+    credentials: true,
+  },
 });
 
 server.listen(NODE_PORT, (err) => {
@@ -18,12 +18,12 @@ server.listen(NODE_PORT, (err) => {
   console.log(`Listening port ${NODE_PORT}`);
 });
 
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   const { id } = socket;
 
-  socket.broadcast.emit('join');
+  socket.broadcast.emit("join");
 
-  socket.on('params', (params) => {
+  socket.on("params", (params) => {
     const {
       x,
       y,
@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
       isShooting,
       lastShootAt,
       name,
-      points
+      points,
     } = params;
 
     const newParams = {
@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
       isShooting,
       lastShootAt,
       name,
-      points
+      points,
     };
 
     if (isHit || isShot) {
@@ -73,13 +73,13 @@ io.on('connection', (socket) => {
       newParams.isShot = false;
     }
 
-    socket.broadcast.emit('params', {
+    socket.broadcast.emit("params", {
       id,
-      params: newParams
+      params: newParams,
     });
   });
 
-  socket.on('disconnect', () => {
-    socket.broadcast.emit('leave', id);
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("leave", id);
   });
 });
